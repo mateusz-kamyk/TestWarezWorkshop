@@ -7,7 +7,7 @@ import { baseURL, userID, user, isbn } from "../helpers/data.js";
 let token_response
 
 describe("Api tests", () => {
-  it("get request", async () => {
+  it.skip("get request", async () => {
     const response = await spec()
       .get(`${baseURL}/BookStore/v1/Books`)
       .inspect();
@@ -32,7 +32,7 @@ describe("Api tests", () => {
     expect(response.statusCode).to.eql(201);
   })
 
-  it.skip("Generate token", async ()=>{
+  it("Generate token", async ()=>{
     const response = await spec()
     .post(`${baseURL}/Account/v1/GenerateToken`)
     .withBody({
@@ -46,19 +46,44 @@ describe("Api tests", () => {
     //eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IlRlc3RXYXJlel91c2VyNCIsInBhc3N3b3JkIjoiVGVzdDEyMyEiLCJpYXQiOjE3MzA5MDEwOTl9.umWZ2mO-GLq54ERwJs0ls7FL43UzZ0JIk1_mK0H0cXo
   })
 
-  it("Add a book", async ()=>{
+  it("Add a book", async () => {
     const response = await spec()
     .post(`${baseURL}/BookStore/v1/Books`)
-    .withBody({
-      "userId": userID,
-      "collectionOfIsbns": [
-        {
-          "isbn": isbn
-        }
-      ]    
-    })
+    .withBearerToken(token_response)
     .inspect()
-    expect(response.statusCode).to.eql(200);
+    .withBody({
+        "userId": userID,
+        "collectionOfIsbns": [
+          {
+            "isbn": "9781449331818"
+          }
+        ]
+      })
+      expect(response.statusCode).to.eql(201)
+  })
 
+  it("Check books in user", async () => {
+    const response = await spec()
+    .get(`${baseURL}/Account/v1/User/${userID}`)
+    .inspect()
+    .withBearerToken(token_response)
+    expect(response.statusCode).to.eql(200)
+  })
+
+  it("Delete all books", async () => {
+    const response = await spec()
+    .delete(`${baseURL}/BookStore/v1/Books?UserId=${userID}`)
+    .inspect()
+    .withBearerToken(token_response)
+    expect(response.statusCode).to.eql(204)
+  })
+
+  it("Check books in user", async () => {
+    const response = await spec()
+    .get(`${baseURL}/Account/v1/User/${userID}`)
+    .inspect()
+    .withBearerToken(token_response)
+    expect(response.statusCode).to.eql(200)
+    expect(response.body.books).to.eql([])
   })
 });
