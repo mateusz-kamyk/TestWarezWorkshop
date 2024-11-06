@@ -6,12 +6,12 @@ name: API Tests CI
 env:
   SECRET_PASSWORD: ${{ secrets.SECRET_PASS }}
 on:
-  schedule:
-    - cron: "0 17,19 * * * 1-5"
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+  chedule:
+    - cron: "0 17,19 * * * 1-5"
 
 jobs:
   build:
