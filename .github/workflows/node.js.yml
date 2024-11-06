@@ -35,7 +35,7 @@ jobs:
     - run: npm test
     - name: Upload test report
       if: always()
-      uses: actions/upload-artifact@4
+      uses: actions/upload-artifact@3
       with:
          name: mochawesome-report
          path: mochawesome-report/
