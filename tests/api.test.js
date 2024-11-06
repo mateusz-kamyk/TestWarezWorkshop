@@ -2,12 +2,12 @@ import { expect } from "chai";
 import pkg from "pactum";
 const { spec } = pkg;
 import 'dotenv/config'
-import { baseURL, userID, user, isbn } from "../helpers/data.js";
+import { baseURL, userID, user } from "../helpers/data.js";
 
 let token_response
 
 describe("Api tests", () => {
-  it.skip("get request", async () => {
+  it("get request", async () => {
     const response = await spec()
       .get(`${baseURL}/BookStore/v1/Books`)
       .inspect();
